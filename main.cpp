@@ -19,28 +19,35 @@ int main(int argc, char* argv[]) {
     outFile.open(argv[2]);
 
     char c;
+    string line;
     string chunk;
 
-    while (inFile.get(c)){
-        chunk.push_back(c);// push char into string
-        if(i > chunkSize) {
-            cout << chunk;
+    while(getline(inFile, line)){                                   // while line, put it in line
+        for(i = 0; i < line.size(); i++){                           // iterate over each char in line
+            chunk.push_back(line[i]);                               // put each char in chunk
 
-            outFile.write(chunk.c_str(), chunkSize); // dump string of size chunkSize into outFile
-
-            chunk.clear();
-            i = 0;
-        } else {
-            i++;
+            if(i == (line.size() - 1) && (i % chunkSize) == 0)      // if EoL and chunk is filled
+            {
+                outFile.write(chunk.c_str(), chunk.size());         // dump chunk into outFile
+                chunk.clear();                                      // clear chunk
+                outFile.put('\n');                                  // print \n
+            }
+            else if(i == (line.size() - 1) && (i % chunkSize) != 0) // if EoL and chunk is NOT filled
+            {
+                outFile.write(chunk.c_str(), chunk.size());         // dump chunk into outFile
+                chunk.clear();                                      // clear chunk
+                outFile.put('\n');                                  // print \n
+            }
+            else if((i % chunkSize) == 0)                           // if chunk filled
+            {
+                outFile.write(chunk.c_str(), chunk.size());         // dump chunk into outFile
+                chunk.clear();                                      // clear chunk
+            }
         }
     }
 
-    if (inFile.eof())                      // check for EOF
-        cout << "\n[EoF reached]\n";
-    else
-        cout << "\n[error reading]\n";
-
-    inFile.close();                        // close file
+    inFile.close();                                                 // close inFile
+    outFile.close();                                                // close inFile
 
     return 0;
 }

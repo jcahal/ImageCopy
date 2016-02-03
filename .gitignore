@@ -3,3 +3,6 @@
 .name
 *.iml
 *.xml
+*.jpg
+*.o
+*.txt
